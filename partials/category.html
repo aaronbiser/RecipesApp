@@ -1,0 +1,20 @@
+
+<h1>Category: {{ stateParams.categoryId }}</h1>
+
+<hr/>
+
+<div class="recipesWrapper clearfix">
+							
+	<div class="recipeBox col-sm-4" 
+		ng-repeat="(key, recipe) in recipesArray | orderBy: 'name' | filter:query"
+		ng-if="recipe.category == stateParams.categoryId "
+		>
+		<a ui-sref="get-recipe({ recipeId: recipe.$id })" class="picture" back-img="uploads/{{ recipe.picture }}"></a>
+		
+		<div class="details">
+			<h3><a ui-sref="get-recipe({ recipeId: recipe.$id })">{{ recipe.name }}</a></h3>
+		</div>
+		
+	</div>
+	
+</div><!--recipesWrapper-->

@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+		
+	    <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+		<meta name="format-detection" content="telephone=no" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<meta name="keywords" content="">	
+	
+		<meta name="description" content="">	
+		
+		<title>Recipes</title> 
+		
+		<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+			
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/wysiwyg.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/angular.min.js"></script>
+		<script src="js/firebase.js"></script>
+		<script src="js/scripts.js"></script>
+		<script src="js/angularfire.min.js"></script>
+		<script src="js/angular-file-upload.js"></script>
+		<script src="js/angular-sanitize.min.js"></script>
+		<script src="js/angular-ui-router.min.js"></script>
+		<script src="js/bootstrap-colorpicker-module.js"></script>
+		<script src="js/angular-wysiwyg.js"></script>
+		<script src="js/app.js"></script>
+			
+	</head>
+	
+	<body ng-app="recipesApp" ng-controller="mainController">
+		
+		<div id="loader"><span class="fa fa-spinner fa-pulse"></span></div>
+		
+		<div id="popUpConfirmation"></div>
+		
+		<div class="wrapper clearfix">
+			
+			<div class="colored-bar"></div>
+				
+			<header class="col-md-2 col-sm-3 windowHeight">
+				
+				<nav class="navbar navbar-default">
+					
+					<div class="navbar-header">
+						<a href="/" class="logo pull-left"><img src="images/ab-logo.png" /></a>
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<div class="searchBox hidden-lg hidden-md hidden-sm pull-right">
+							<input type="text" placeholder="Filter Recipes By Name" ng-model="query.name">
+						</div>
+					</div>
+				
+					<div id="navbar" class="navbar-collapse collapse">
+						
+						<div class="category-selection">
+						    <ul class="list-unstyled">
+						    	<li>
+						    	    <a ui-sref="get-category({ categoryId: 'dinner' })">Dinner</a>
+						    	</li>
+						    	<li>
+						    	    <a ui-sref="get-category({ categoryId: 'lunch' })">Lunch</a>
+						    	</li>
+						    	<li>
+						    	    <a ui-sref="get-category({ categoryId: 'breakfast' })">Breakfast</a>
+						    	</li>
+						        <li>
+						            <a ui-sref="get-category({ categoryId: 'drinks' })">Drinks</a>
+						        </li>
+						    </ul>
+						</div>
+						
+						<!--<div class="category-selection">
+						    <ul class="list-unstyled">
+						    	<li class="active">
+						    	    <input type="radio" ng-model="query" name="catSelect" value="" id="allCategory" checked />
+						    	    <label for="allCategory" >Show All</label>
+						    	</li>
+						    	<li>
+						    	    <input type="radio" ng-model="query.category" name="catSelect" value="dinner" id="dinnerCategory" />
+						    	    <label for="dinnerCategory">Dinner</label>
+						    	</li>
+						    	<li>
+						    	    <input type="radio" ng-model="query.category" name="catSelect" value="lunch" id="lunchCategory" />
+						    	    <label for="lunchCategory">Lunch</label>
+						    	</li>
+						        <li>
+						            <input type="radio" ng-model="query.category" name="catSelect" value="breakfast" id="breakfastCategory" />
+						            <label for="breakfastCategory">Breakfast</label>
+						        </li>
+						        <li>
+						            <input type="radio" ng-model="query.category" name="catSelect" value="drinks" id="drinksCategory" />
+						            <label for="drinksCategory">Drinks</label>
+						        </li>
+						    </ul>
+						</div>-->
+							
+						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#addNewModal">Add New &nbsp;<i class="fa fa-plus"></i></button>	
+							
+						<!--<div class="searchBox">
+							<input type="text" placeholder="Search Recipes">
+							<input type="submit" value="Search">
+						</div>-->
+						
+						<!--<button class="btn btn-primary" ng-click="pushData()">Push Data</button>
+						<button class="btn btn-primary" ng-confirm-click="You are about to remove all data. Are you sure you want to continue??" ng-click="resetData()">Reset Data</button>-->
+					
+					</div><!--/.nav-collapse -->
+					
+				</nav>
+				
+			</header>	
+				
+				
+			<main class="col-md-10 col-sm-9">
+				
+				<!--NG VIEW STATES -->
+				<div ui-view></div>
+				
+				<div class="clearfix">
+					<footer>&copy; <script type="text/javascript">copyright=new Date(); update=copyright.getFullYear(); document.write(update);</script> Aaron Biser. All rights reserved.</footer>
+				</div><!--clearfix-->
+				
+			</main>
+			
+			<div id="addNewModal" class="modal fade">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			    
+			    	<form ng-submit="addRecipe()" name="newRecipeForm" novalidate>
+			    
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title">Add New Recipe</h4>
+				      </div>
+				      
+				      <div class="colored-bar"></div>
+				      
+				      <div class="modal-body">
+						
+						<div class="form-group" ng-class="{ 'has-error' : newRecipeForm.name.$invalid && showValidationMessages }">
+							<label>Name</label>
+							<input type="text" name="name" value="{{recipe.name}}" class="form-control" ng-model="recipe.name" required>
+							<p ng-show="newRecipeForm.name.$invalid && showValidationMessages" class="help-block">Recipe name is required</p>
+						</div>
+						
+						<div class="form-group" 
+							 nv-file-drop="" 
+							 uploader="uploader" 
+							 filters="queueLimit, customFilter" 
+							 ng-class="{ 'has-error' : !imageUploaded && showValidationMessages }"
+							 >
+							
+							<label>Upload Image</label>
+							<input type="file" ng-model="file" valid-file nv-file-select="" uploader="uploader" required />
+							<p ng-show="!imageUploaded && showValidationMessages" class="help-block">Recipe image is required</p>
+							
+							<table class="table" ng-repeat="item in uploader.queue">
+						        <tr>
+						            <td width="50%">Name</td>
+						            <td>
+						            	{{ item.file.name }}
+						            </td>
+						        </tr>
+						        <tr>    
+						            <td ng-show="uploader.isHTML5">Size</td>
+						            <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+						        </tr>  
+						        <tr>  
+						            <td ng-show="uploader.isHTML5">Progress</td>
+						            <td ng-show="uploader.isHTML5">
+						                <div class="progress" style="margin-bottom: 0;">
+						                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+						                </div>
+						            </td>
+						        </tr>    
+						        <tr>
+						            <td nowrap colspan="2" style="text-align: right;">
+						            	
+						            	<div class="status">
+							            	<span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+							            	<span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+							            	<span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+						            	</div>
+						            	
+						            	<button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" style="margin-right: 6px;">
+						            	    <span class="glyphicon glyphicon-trash"></span> Remove
+						            	</button>
+						            	
+						            	<button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+						            	    <span class="glyphicon glyphicon-upload"></span> Upload
+						            	</button>
+						            	
+						            </td>
+						        </tr>
+							</table>     
+							
+						</div>
+						
+						<div class="form-group" ng-class="{ 'has-error' : newRecipeForm.category.$invalid && showValidationMessages }">
+							<label>Category: &nbsp;&nbsp;</label><br />
+							
+							<input type="radio" ng-model="recipe.category" value="dinner" id="dinnerSelect" required />
+							<span for="dinnerSelect">Dinner &nbsp;&nbsp;</span>
+							
+							<input type="radio" ng-model="recipe.category" value="lunch" id="lunchSelect" required />
+							<span for="lunchSelect">Lunch &nbsp;&nbsp;</span>
+							
+							<input type="radio" ng-model="recipe.category" value="breakfast" id="breakfastSelect" required />
+							<span for="breakfastSelect">Breakfast &nbsp;&nbsp;</span>
+							
+							<input type="radio" ng-model="recipe.category" value="drinks" id="drinksSelect" required />
+							<span for="drinksSelect">Drink Recipe &nbsp;&nbsp;</span>
+							
+							<p ng-show="newRecipeForm.category.$invalid && showValidationMessages" class="help-block">Category selection is required</p>
+						</div>
+						
+						
+						<div class="form-group" ng-class="{ 'has-error' : newRecipeForm.ingredients.$invalid && showValidationMessages }">
+							<label>Ingredients</label>
+							<wysiwyg textarea-class="form-control"  textarea-height="180px" textarea-name="ingredients" ng-model="recipe.ingredients" enable-bootstrap-title="true" required></wysiwyg>
+							<p ng-show="newRecipeForm.ingredients.$invalid && showValidationMessages" class="help-block">Recipe ingredients are required</p>
+						</div>
+						
+						<div class="form-group" ng-class="{ 'has-error' : newRecipeForm.directions.$invalid && showValidationMessages }">
+							<label>Directions</label>
+							<wysiwyg textarea-class="form-control"  textarea-height="180px" textarea-name="ingredients"  ng-model="recipe.directions" enable-bootstrap-title="true" required></wysiwyg>
+							<p ng-show="newRecipeForm.directions.$invalid && showValidationMessages" class="help-block">Recipe directions are required</p>
+						</div>
+						
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="submit" class="btn btn-primary" ng-disabled="newRecipeForm.$invalid || !imageUploaded" ng-click="uploader.clearQueue()">Add Recipe</button>
+				      </div>
+			      
+			      </form>
+			      
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			
+		</div><!--wrapper-->	
+	 	
+	</body>
+</html>
+
+

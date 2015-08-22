@@ -1,0 +1,143 @@
+
+<div class="recipeSingle">
+
+	<p class="category">{{recipe.category}}</p>
+	<h1>{{ recipe.name }}</h1>
+	
+	<img src="uploads/{{ recipe.picture }}" alt="{{ recipe.name }}" class="img-responsive xxs-480 pull-right" />
+	
+	<h3>Ingredients</h3>
+	<div ng-bind-html="recipe.ingredients" class="ingredients"></div>
+	
+	<br />
+	<h3>Directions</h3>
+	<div ng-bind-html="recipe.directions" class="directions"></div>
+	
+	<div class="recipeBtns clearfix">
+		<button type="button" class="btn btn-danger btn-sm" ng-confirm-click="You are about to permanently remove this recipe. Are you sure you want to continue?" ng-click="removeRecipe()" ui-sref="home()"><span class="glyphicon glyphicon-trash"></span>&nbsp; Remove Recipe</button>
+		
+		<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" ng-click="editRecipe()"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Edit Recipe</button>
+		
+	</div><!--recipeBtns-->
+	
+</div><!--recipeSingle-->	
+
+
+<div id="editModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    
+    	<form ng-submit="updateRecipe()" name="updateRecipeForm" novalidate>
+    
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Edit Recipe</h4>
+	      </div>
+			
+		  <div class="colored-bar"></div>	
+			
+	      <div class="modal-body">
+			
+			<div class="form-group" ng-class="{ 'has-error' : updateRecipeForm.name.$invalid && showValidationMessages }">
+				<label>Name</label>
+				<input type="text" name="name" class="form-control" ng-model="updateRecipeObj.name" required>
+				<p ng-show="updateRecipeForm.name.$invalid && showValidationMessages" class="help-block">Recipe name is required</p>
+			</div>
+			
+			<label>Current Image</label>
+			<img src="uploads/{{ recipe.picture }}" alt="{{ recipe.name }}" class="img-responsive" style="width: 40%; border: 1px solid #fff;" />
+						
+			<div class="form-group" 
+				 nv-file-drop="" 
+				 uploader="uploader" 
+				 filters="queueLimit, customFilter" 
+				 ng-class="{ 'has-error' : !imageUploaded && showValidationMessages }"
+				 >
+				
+				<br />
+				<label>Upload New Image</label>
+				<input type="file" ng-model="file" valid-file nv-file-select="" uploader="uploader" />
+				<p ng-show="!imageUploaded && showValidationMessages" class="help-block">Recipe image is required</p>
+				
+			    <table class="table" ng-repeat="item in uploader.queue">
+			        <thead>
+			            <tr>
+			                <th width="50%">Name</th>
+			                <th ng-show="uploader.isHTML5">Size</th>
+			                <th ng-show="uploader.isHTML5">Progress</th>
+			                <th>Status</th>
+			                <th>Actions</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <tr>
+			                <td>
+			                	{{ item.file.name }}
+			                </td>
+			                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+			                <td ng-show="uploader.isHTML5">
+			                    <div class="progress" style="margin-bottom: 0;">
+			                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+			                    </div>
+			                </td>
+			                <td class="text-center">
+			                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+			                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+			                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+			                </td>
+			                <td nowrap>
+			                	<button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+			                	    <span class="glyphicon glyphicon-trash"></span> Remove
+			                	</button>
+			                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+			                        <span class="glyphicon glyphicon-upload"></span> Upload
+			                    </button>
+			                </td>
+			            </tr>
+			        </tbody>
+			    </table>
+				
+			</div>
+			
+			<div class="form-group" ng-class="{ 'has-error' : updateRecipeForm.category.$invalid && showValidationMessages }">
+				<label>Category: &nbsp;&nbsp;</label><br />
+				
+				<input type="radio" ng-model="updateRecipeObj.category" value="dinner" id="dinnerSelect" required />
+				<span for="dinnerSelect">Dinner &nbsp;&nbsp;&nbsp;</span>
+				
+				<input type="radio" ng-model="updateRecipeObj.category" value="lunch" id="lunchSelect" required />
+				<span for="lunchSelect">Lunch &nbsp;&nbsp;&nbsp;</span>
+				
+				<input type="radio" ng-model="updateRecipeObj.category" value="breakfast" id="breakfastSelect" required />
+				<span for="breakfastSelect">Breakfast &nbsp;&nbsp;&nbsp;</span>
+				
+				<input type="radio" ng-model="updateRecipeObj.category" value="drinks" id="drinkSelect" required />
+				<span for="drinkSelect">Drink Recipe &nbsp;&nbsp;&nbsp;</span>
+				
+				<p ng-show="updateRecipeForm.name.$invalid && showValidationMessages" class="help-block">Category selection is required</p>
+			</div>
+			
+			<div class="form-group" ng-class="{ 'has-error' : updateRecipeForm.ingredients.$invalid && showValidationMessages }">
+				<label>Ingredients</label>
+				<wysiwyg textarea-class="form-control"  textarea-height="180px" textarea-name="ingredients" ng-model="updateRecipeObj.ingredients" enable-bootstrap-title="true" required></wysiwyg>
+				<p ng-show="updateRecipeForm.ingredients.$invalid && showValidationMessages" class="help-block">Recipe ingredients are required</p>
+			</div>
+			
+			<div class="form-group" ng-class="{ 'has-error' : updateRecipeForm.directions.$invalid && showValidationMessages }">
+				<label>Directions</label>
+				<wysiwyg textarea-class="form-control"  textarea-height="180px" textarea-name="ingredients"  ng-model="updateRecipeObj.directions" enable-bootstrap-title="true" required></wysiwyg>
+				<p ng-show="updateRecipeForm.directions.$invalid && showValidationMessages" class="help-block">Recipe directions are required</p>
+			</div>
+			
+	      </div><!--modal body -->
+	      
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button type="submit" class="btn btn-primary" ng-disabled="updateRecipeForm.$invalid" ng-click="uploader.clearQueue()">Update Recipe</button>
+	      </div>
+      
+      </form>
+      
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
